@@ -53,32 +53,13 @@ def magnitude():
 @app.route('/options' , methods = ['POST', 'GET'])
 def options():
    con = sql.connect("database.db")
- 
-   print (request.form['1'])
-   print (request.form['1'])
-   print (request.form['1'])
-   print(request.form['mag'])
+   print(request.form['mag1'])
+   print(request.form['mag2'])
    cur = con.cursor()
-   row = []
-   rows_2 = []
-   if request.form['1']== 'greater':
-       cur.execute("select Count(*) from Earthquake where mag > ?",(request.form['mag'],))	   
-       rows = cur.fetchall()
-       cur.execute("select * from Earthquake where mag > ?",(request.form['mag'],))
-       rows_2 = cur.fetchall()
-   elif request.form['1']== 'lesser':
-       cur.execute("select Count (*) from Earthquake where mag < ?",(request.form['mag'],))
-       rows = cur.fetchall()
-       cur.execute("select * from Earthquake where mag < ?",(request.form['mag'],))
-       rows_2 = cur.fetchall()
-   else :
-       cur.execute("select Count (*) from Earthquake where mag = ?",(request.form['mag'],))
-       rows = cur.fetchall()
-       cur.execute("select * from Earthquake where mag = ?",(request.form['mag'],))
-       rows_2 = cur.fetchall()
-   print(len(rows))
+   cur.execute("select Count(*) from Earthquake where mag BETWEEN ? and ?",(request.form['mag1'],request.form['mag2']))
+   rows = cur.fetchall()
    con.close()
-   return render_template("list1.html",rows = [rows,rows_2])
+   return render_template("list1.html",rows = rows)
 
 @app.route('/range')
 def range():
@@ -90,7 +71,7 @@ def values():
    print (request.form['mag1'])
    print (request.form['mag2'])
    cur = con.cursor()
-   cur.execute("select * from Earthquake WHERE mag BETWEEN ? and ?" ,(request.form['mag1'],request.form['mag2'] ))
+   cur.execute("select * from Earthquake WHERE latitude BETWEEN ? and ?" ,(request.form['mag1'],request.form['mag2'] ))
    rows = cur.fetchall()
    con.close()
    return render_template("list2.html",rows = rows)
